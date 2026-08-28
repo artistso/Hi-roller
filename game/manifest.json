@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "Hi Roller",
+  "short_name": "Hi Roller",
+  "description": "Skill-based reel strategy and portrait tower defense.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1b2832",
+  "theme_color": "#1b2832",
+  "categories": ["games", "strategy"],
+  "icons": [
+    { "src": "assets/ui/chip.png", "sizes": "1254x1254", "type": "image/png", "purpose": "any" },
+    { "src": "assets/ui/chip.png", "sizes": "1254x1254", "type": "image/png", "purpose": "maskable" }
+  ]
+}
