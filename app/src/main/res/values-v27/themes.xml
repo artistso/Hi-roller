@@ -1,5 +1,0 @@
-<resources>
-    <style name="Theme.HiRoller">
-        <item name="android:windowLightNavigationBar">false</item>
-    </style>
-</resources>
