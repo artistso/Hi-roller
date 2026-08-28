@@ -1,0 +1,10 @@
+<resources>
+    <style name="Theme.HighRoller" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:statusBarColor">@color/bg</item>
+        <item name="android:navigationBarColor">@color/bg</item>
+        <item name="colorPrimary">@color/pink</item>
+        <item name="colorAccent">@color/gold</item>
+    </style>
+</resources>

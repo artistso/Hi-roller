@@ -1,0 +1,13 @@
+{
+  "name": "Hi Roller",
+  "short_name": "Hi Roller",
+  "description": "Say hi to the roller. Skill-based slot-machine tower defense.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1b2832",
+  "theme_color": "#1b2832",
+  "icons": [
+    { "src": "assets/ui/chip.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
