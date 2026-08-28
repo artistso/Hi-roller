@@ -1,15 +1,36 @@
+# Gradle
+.gradle/
+**/build/
+build/
+local.properties
+*.iml
+*.log
+
+# Android Studio
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Keystore & signing (never commit these)
 keystore/
 keystore.properties
 *.jks
 *.keystore
-.gradle/
-.idea/
-build/
-app/build/
-local.properties
-*.iml
-.DS_Store
+*.apk
+
+# Node / Colyseus server
 node_modules/
+server/node_modules/
 server/dist/
 server/.env
-game/.cache
+
+# Supabase local
+supabase/.temp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# PWA / generated cache
+game/.cache/
