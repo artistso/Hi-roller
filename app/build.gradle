@@ -1,0 +1,84 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+def keystoreProps = new Properties()
+def keystorePropsFile = rootProject.file('keystore.properties')
+if (keystorePropsFile.exists()) {
+    keystorePropsFile.withInputStream { keystoreProps.load(it) }
+}
+
+def generatedWebAssets = layout.buildDirectory.dir('generated/web-assets')
+
+android {
+    namespace 'com.highroller'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.hiroller'
+        minSdk 26
+        targetSdk 36
+        versionCode 2
+        versionName '0.2.0'
+    }
+
+    signingConfigs {
+        release {
+            def store = keystoreProps['storeFile'] ?: System.getenv('KEYSTORE_FILE')
+            if (store) {
+                storeFile rootProject.file(store)
+                storePassword keystoreProps['storePassword'] ?: System.getenv('KEYSTORE_PASSWORD')
+                keyAlias keystoreProps['keyAlias'] ?: System.getenv('KEY_ALIAS') ?: 'hiroller'
+                keyPassword keystoreProps['keyPassword'] ?: System.getenv('KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (signingConfigs.release.storeFile != null) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    sourceSets {
+        main.assets.srcDir generatedWebAssets
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    lint {
+        abortOnError true
+        checkReleaseBuilds true
+    }
+}
+
+tasks.register('syncWebGame', Sync) {
+    from rootProject.file('game')
+    into generatedWebAssets.map { it.dir('game') }
+    exclude '.cache/**'
+}
+
+tasks.named('preBuild').configure {
+    dependsOn tasks.named('syncWebGame')
+}

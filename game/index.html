@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#1b2832" />
+  <meta name="description" content="Hi Roller is a skill-based, portrait tower-defense game built around reel strips, rotating cabinets, and 100 collectible towers." />
+  <meta name="application-name" content="Hi Roller" />
+  <meta property="og:title" content="Hi Roller — Say hi to the roller" />
+  <meta property="og:description" content="Build a nine-tower reel strip, spin your cabinets, and defend the tracks." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/ui/logo.png" />
+  <link rel="canonical" href="https://artistso.github.io/Hi-roller/" />
+  <title>HI ROLLER</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/ui/chip.png" />
+  <link rel="stylesheet" href="css/game.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- SPLASH -->
+    <section id="screen-splash" class="screen splash">
+      <img class="splash-art" src="assets/ui/splash.png" alt="" />
+      <div class="splash-veil"></div>
+      <img class="logo splash-logo" src="assets/ui/logo.png" alt="Hi Roller" />
+      <h1 class="display splash-title">HI ROLLER</h1>
+      <p class="splash-tag">say hi to the roller</p>
+      <p class="splash-cta">tap to wake the table</p>
+    </section>
+
+    <!-- MAIN MENU -->
+    <section id="screen-home" class="screen hidden">
+      <div class="topbar">
+        <div class="player-chip" id="home-player">
+          <img id="home-avatar" alt="" />
+          <div class="meta">
+            <div class="name" id="home-name">Wanderer</div>
+            <div class="sub" id="home-rank">Wanderer · Lv 1</div>
+          </div>
+        </div>
+        <div class="chips-pill"><img src="assets/ui/chip.png" alt="" /><span id="home-chips">900</span></div>
+        <button class="icon-btn" id="btn-settings" type="button" aria-label="Open settings" title="Settings">⚙</button>
+      </div>
+
+      <div class="build-note"><span>v0.2 preview</span><b>One game · web and Android</b></div>
+
+      <div class="hero">
+        <img class="logo" src="assets/ui/logo.png" alt="Hi Roller" />
+        <h1 class="display">HI ROLLER</h1>
+        <div class="tag">Skill · Reels · Talent Trees</div>
+      </div>
+
+      <div class="play-wrap">
+        <button class="btn primary" id="btn-play">PLAY</button>
+      </div>
+
+      <div class="grid-nav" aria-label="Game modes and collections">
+        <button class="nav-card" type="button" data-go="practice"><span class="ic">🎯</span><span class="t">Practice</span><span class="d">3 min · learn the tracks</span></button>
+        <button class="nav-card" type="button" data-go="ranked"><span class="ic">⚔️</span><span class="t">Solo League</span><span class="d">5 min · ranked CPU preview</span></button>
+        <button class="nav-card" type="button" data-go="guide"><span class="ic">📜</span><span class="t">Rulebook</span><span class="d">Learn every core verb</span></button>
+        <button class="nav-card" type="button" data-go="loadout"><span class="ic">🎰</span><span class="t">Loadout</span><span class="d">9 towers · your reel strip</span></button>
+        <button class="nav-card" type="button" data-go="talents"><span class="ic">🌳</span><span class="t">Talents</span><span class="d">A tree for every tower</span></button>
+        <button class="nav-card" type="button" data-go="collection"><span class="ic">📖</span><span class="t">Collection</span><span class="d">100 towers to master</span></button>
+        <button class="nav-card" type="button" data-go="shop"><span class="ic">🛍️</span><span class="t">Shop</span><span class="d">Cabinets, themes, faces</span></button>
+        <button class="nav-card" type="button" data-go="profile"><span class="ic">👤</span><span class="t">Profile</span><span class="d">Rank, history, skins</span></button>
+        <button class="nav-card" type="button" data-go="leaderboard"><span class="ic">📊</span><span class="t">Leaderboard</span><span class="d">Local preview standings</span></button>
+        <button class="nav-card" type="button" data-go="tournament"><span class="ic">🏆</span><span class="t">Tournament</span><span class="d">Weekly solo bracket preview</span></button>
+        <button class="nav-card" type="button" data-go="achievements"><span class="ic">🎖️</span><span class="t">Badges</span><span class="d">Trail legends</span></button>
+        <button class="nav-card" type="button" data-go="roadmap"><span class="ic">🧭</span><span class="t">Roadmap</span><span class="d">What is playable and next</span></button>
+      </div>
+      <div class="home-foot">Portrait · skill-based · offline-ready preview</div>
+    </section>
+
+    <!-- MATCH -->
+    <section id="screen-match" class="screen hidden">
+      <canvas id="cv"></canvas>
+      <div id="hud">
+        <div class="hud-top">
+          <button class="icon-btn hit hud-pause" id="btn-pause" type="button" aria-label="Pause match">Ⅱ</button>
+          <div class="statbox"><div class="k">Opponent</div><div class="v" id="hud-opp-name">LuckyLiu</div></div>
+          <div class="statbox"><div class="k">Chips</div><div class="v" id="hud-opp-chips">0</div></div>
+          <div class="timer" id="hud-timer">5:00</div>
+          <div class="statbox"><div class="k">Windows</div><div class="v" id="hud-opp-towers">3</div></div>
+        </div>
+        <div class="toast-layer" id="toasts" role="status" aria-live="polite"></div>
+        <div class="countdown hidden" id="countdown"><b>3</b></div>
+        <div class="hint hidden" id="hint"></div>
+        <div class="hud-bot">
+          <button class="ability hit" id="btn-spin"><span class="cd"></span><span class="g">🎰</span>SPIN</button>
+          <div class="statbox hit" style="flex:1">
+            <div class="k">Your chips · Lv <span id="hud-lv">1</span></div>
+            <div class="v" id="hud-chips">0</div>
+          </div>
+          <button class="shop-fab hit" id="btn-match-shop">UPGRADE</button>
+          <button class="ability hit" id="btn-dd"><span class="cd"></span><span class="g">📈</span>2×</button>
+          <button class="ability hit" id="btn-emote"><span class="g">👋</span>HI</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOADOUT -->
+    <section id="screen-loadout" class="screen hidden">
+      <div class="hdr"><button class="icon-btn" data-back>←</button><h2 class="display">REEL STRIP</h2></div>
+      <p class="lede">Nine towers ride your cabinets. Order is the strip the slot machine pulls from. Skill is knowing who to spin in.</p>
+      <div id="loadout-strip" class="loadout-strip"></div>
+      <div class="tabs" id="loadout-fams"></div>
+      <div id="loadout-pool" class="shop-grid"></div>
+    </section>
+
+    <!-- TALENTS -->
+    <section id="screen-talents" class="screen hidden">
+      <div class="hdr">
+        <button class="icon-btn" data-back>←</button>
+        <h2 class="display">TALENT TREES</h2>
+        <div class="chips-pill" id="tp-pill">0 TP</div>
+      </div>
+      <div class="tabs" id="talent-fams"></div>
+      <div id="talent-list" class="list panel"></div>
+      <div id="talent-tree" class="tree-wrap hidden"></div>
+    </section>
+
+    <!-- COLLECTION -->
+    <section id="screen-collection" class="screen hidden">
+      <div class="hdr"><button class="icon-btn" data-back>←</button><h2 class="display">100 TOWERS</h2><div class="chips-pill" id="col-count">0/100</div></div>
+      <div class="tabs" id="col-fams"></div>
+      <div id="col-grid" class="shop-grid"></div>
+    </section>
+
+    <!-- SHOP -->
+    <section id="screen-shop" class="screen hidden">
+      <div class="hdr">
+        <button class="icon-btn" data-back>←</button>
+        <h2 class="display">THE CAGE</h2>
+        <div class="chips-pill"><img src="assets/ui/chip.png" alt="" /><span class="live-chips">0</span></div>
+      </div>
+      <div class="tabs" id="shop-tabs">
+        <button class="tab on" data-tab="upgrades">In-match</button>
+        <button class="tab" data-tab="skins">Cabinets</button>
+        <button class="tab" data-tab="themes">Themes</button>
+        <button class="tab" data-tab="avatars">Faces</button>
+        <button class="tab" data-tab="emotes">Emotes</button>
+      </div>
+      <div id="shop-body" class="shop-grid"></div>
+    </section>
+
+    <section id="screen-profile" class="screen hidden">
+      <div class="hdr"><button class="icon-btn" data-back>←</button><h2 class="display">PROFILE</h2></div>
+      <div class="profile-hero">
+        <div id="prof-av"></div>
+        <div class="display" id="prof-name" style="font-size:28px">Wanderer</div>
+        <div class="neon" id="prof-tier">Wanderer</div>
+        <div style="font-size:12px;color:var(--muted)" id="prof-rankpts">0 RP</div>
+        <div class="rank-bar"><i id="prof-bar" style="width:10%"></i></div>
+      </div>
+      <div class="stat-grid">
+        <div class="panel"><div class="k">Level</div><div class="v" id="prof-lv">1</div></div>
+        <div class="panel"><div class="k">Record</div><div class="v" id="prof-wl">0–0</div></div>
+        <div class="panel"><div class="k">Streak</div><div class="v" id="prof-st">0</div></div>
+        <div class="panel"><div class="k">Peak</div><div class="v" id="prof-peak">Wanderer</div></div>
+      </div>
+      <div class="panel" style="margin-top:8px;overflow:auto;flex:1;touch-action:pan-y">
+        <div class="k" style="margin-bottom:8px">RECENT MATCHES</div>
+        <div id="prof-hist"></div>
+      </div>
+    </section>
+
+    <section id="screen-leaderboard" class="screen hidden">
+      <div class="hdr"><button class="icon-btn" data-back>←</button><h2 class="display">HIGH ROLLERS</h2></div>
+      <div class="tabs" id="lb-tabs">
+        <button class="tab on" data-lb="rank">Rank</button>
+        <button class="tab" data-lb="wins">Wins</button>
+        <button class="tab" data-lb="chips">Chips</button>
+        <button class="tab" data-lb="streak">Streak</button>
+      </div>
+      <div class="list panel" id="lb-body"></div>
+    </section>
+
+    <section id="screen-tournament" class="screen hidden">
+      <div class="hdr"><button class="icon-btn" data-back>←</button><h2 class="display">FRIDAY NIGHT</h2></div>
+      <div class="panel">
+        <div class="neon" style="letter-spacing:.2em;font-size:11px">WEEKLY 64 · SINGLE ELIM</div>
+        <p id="tourney-status" style="margin:8px 0 12px;color:var(--muted)">Winner takes the Golden Dealer.</p>
+        <button class="btn primary" id="btn-register">REGISTER</button>
+        <button class="btn cyan hidden" id="btn-tourney-play" style="width:100%;margin-top:8px">PLAY NEXT MATCH</button>
+      </div>
+      <div class="bracket" id="bracket"></div>
+    </section>
+
+    <section id="screen-achievements" class="screen hidden">
+      <div class="hdr"><button class="icon-btn" data-back>←</button><h2 class="display">BADGES</h2><div class="chips-pill" id="ach-count">0/38</div></div>
+      <div class="ach-grid" id="ach-grid"></div>
+    </section>
+
+    <section id="screen-guide" class="screen hidden info-screen">
+      <div class="hdr"><button class="icon-btn" type="button" data-back aria-label="Back to menu">←</button><h2 class="display">THE RULEBOOK</h2></div>
+      <div class="info-scroll">
+        <div class="rule-hero panel">
+          <div class="rule-mark">🎰</div>
+          <div><div class="kicker">THE CORE LOOP</div><h3>Build. Spin. Defend.</h3><p>Minions travel the tracks between your cabinets. Towers fire automatically; your skill is timing spins, placement, upgrades, and Double Down.</p></div>
+        </div>
+        <div class="step-list">
+          <article class="info-card"><b>1</b><div><h3>Read the tracks</h3><p>Watch both gutters. A tower attacks nearby enemy minions; a minion that crosses the table earns chips for its owner.</p></div></article>
+          <article class="info-card"><b>2</b><div><h3>Work the cabinets</h3><p>Swipe a cabinet or press SPIN to rotate in a fresh tower from your nine-tower reel strip. Spinning costs 50 match chips.</p></div></article>
+          <article class="info-card"><b>3</b><div><h3>Fill empty windows</h3><p>Double-tap an empty slot, then place a tower for 80 match chips. Tap a live tower to inspect or upgrade it.</p></div></article>
+          <article class="info-card"><b>4</b><div><h3>Spend with intent</h3><p>Double Down boosts chip scoring for five seconds. Persistent tower levels and talent trees shape later matches.</p></div></article>
+        </div>
+        <div class="panel rule-summary">
+          <h3>How a match ends</h3>
+          <p>The timer reaches zero or one side loses every living tower. Remaining towers and chips decide the winner.</p>
+          <button class="btn primary" id="btn-guide-practice" type="button">TRY PRACTICE</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-roadmap" class="screen hidden info-screen">
+      <div class="hdr"><button class="icon-btn" type="button" data-back aria-label="Back to menu">←</button><h2 class="display">ROADMAP</h2><div class="version-pill">v0.2</div></div>
+      <p class="lede">An honest snapshot of the current preview. No storefront promise is presented as finished.</p>
+      <div class="info-scroll milestone-list">
+        <article class="milestone done"><div class="milestone-dot">✓</div><div><div class="kicker">PLAYABLE NOW</div><h3>Offline core game</h3><p>Practice, Solo League, 100 tower definitions, loadouts, talent trees, achievements, local progression, audio, haptics, and offline caching.</p></div></article>
+        <article class="milestone done"><div class="milestone-dot">✓</div><div><div class="kicker">RELEASE FOUNDATION</div><h3>Android and web share one client</h3><p>The APK bundles this same tested game, while GitHub Pages publishes the installable web version.</p></div></article>
+        <article class="milestone active"><div class="milestone-dot">2</div><div><div class="kicker">IN DEVELOPMENT</div><h3>Real accounts and online matches</h3><p>Supabase persistence and an authoritative Colyseus room are scaffolded. Matchmaking, reconnects, validation, and live leaderboards remain to be integrated.</p></div></article>
+        <article class="milestone"><div class="milestone-dot">3</div><div><div class="kicker">NEXT</div><h3>Content and competitive balance</h3><p>Distinct tower art, complete talent effects, matchmaking ratings, deterministic balance tests, accessibility QA, and closed beta telemetry.</p></div></article>
+        <article class="milestone"><div class="milestone-dot">4</div><div><div class="kicker">SHIP</div><h3>Store-ready release</h3><p>Play signing, privacy policy, data-safety declaration, screenshots, controller testing, and a staged Google Play rollout.</p></div></article>
+      </div>
+    </section>
+
+    <section id="screen-about" class="screen hidden info-screen">
+      <div class="hdr"><button class="icon-btn" type="button" data-back aria-label="Back to menu">←</button><h2 class="display">ABOUT</h2></div>
+      <div class="info-scroll">
+        <div class="about-lockup panel">
+          <img src="assets/ui/logo.png" alt="Hi Roller logo" />
+          <div><div class="kicker">AN ORIGINAL GAME BY</div><h3>Steven Owens · artistso</h3><p>Skill-based reel strategy for Android and the web.</p></div>
+        </div>
+        <div class="panel legal-copy">
+          <h3>Preview privacy</h3>
+          <p>This build stores profile and progression data locally on your device. It does not include advertising, analytics, account login, or an active payment system.</p>
+          <h3>Prototype notice</h3>
+          <p>Solo League, preview standings, and the weekly bracket currently use local CPU opponents. Online services are represented in the roadmap and source, but are not claimed as live.</p>
+          <h3>Project links</h3>
+          <p><a href="https://github.com/artistso/Hi-roller" target="_blank" rel="noopener">GitHub source and releases</a><br /><a href="https://artistso.com" target="_blank" rel="noopener">artistso.com</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-settings" class="screen hidden">
+      <div class="hdr"><button class="icon-btn" data-back>←</button><h2 class="display">CAMPFIRE</h2></div>
+      <div class="panel">
+        <div class="k">DISPLAY NAME</div>
+        <div class="name-row">
+          <input id="inp-name" maxlength="16" placeholder="Username" />
+          <button class="btn" id="btn-save-name">SAVE</button>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:10px">
+        <div class="toggle"><span>Loopable music</span><button class="switch on" id="sw-music"><i></i></button></div>
+        <div class="toggle"><span>Sound FX</span><button class="switch on" id="sw-sfx"><i></i></button></div>
+        <div class="toggle"><span>Haptics</span><button class="switch on" id="sw-haptics"><i></i></button></div>
+        <div class="toggle"><span>High graphics</span><button class="switch on" id="sw-gfx"><i></i></button></div>
+        <div class="toggle"><span>Reduced motion</span><button class="switch" id="sw-motion" aria-pressed="false"><i></i></button></div>
+        <div class="toggle"><span>High contrast</span><button class="switch" id="sw-contrast" aria-pressed="false"><i></i></button></div>
+      </div>
+      <div class="panel" style="margin-top:10px">
+        <p class="desc" style="color:var(--muted);font-size:12px">Progress lives on this device. GitHub Pages build is the same client. Offline practice always works.</p>
+        <button class="btn cyan hidden" id="btn-install" type="button" style="width:100%;margin-top:8px">INSTALL WEB APP</button>
+        <div class="settings-links">
+          <button class="btn ghost" type="button" data-go="guide">Rulebook</button>
+          <button class="btn ghost" type="button" data-go="roadmap">Roadmap</button>
+          <button class="btn ghost" type="button" data-go="about">About &amp; Privacy</button>
+        </div>
+        <button class="btn ghost" id="btn-reset" style="width:100%;margin-top:8px">Reset local profile</button>
+      </div>
+    </section>
+
+    <section id="screen-result" class="screen hidden">
+      <div class="result-hero">
+        <div class="tag" id="res-mode">RANKED</div>
+        <h1 class="display" id="res-title">YOU WIN</h1>
+        <div id="res-sub" style="color:var(--muted)">vs LuckyLiu</div>
+      </div>
+      <div class="stat-grid">
+        <div class="panel"><div class="k">Chips</div><div class="v" id="res-chips">+0</div></div>
+        <div class="panel"><div class="k">XP</div><div class="v" id="res-xp">+0</div></div>
+        <div class="panel"><div class="k">Rank</div><div class="v" id="res-rank">+0</div></div>
+        <div class="panel"><div class="k">Damage</div><div class="v" id="res-dmg">0</div></div>
+      </div>
+      <button class="btn primary" id="btn-result-home" style="width:100%">BACK TO MENU</button>
+      <button class="btn ghost" id="btn-result-again" style="width:100%;margin-top:8px">PLAY AGAIN</button>
+    </section>
+  </div>
+
+  <div class="modal-back hidden" id="modal"><div class="sheet" id="sheet"></div></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/towers.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/save.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

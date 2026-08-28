@@ -1,83 +1,83 @@
-# HI ROLLER
+# Hi Roller
 
-Say hi to the roller.
+> Say hi to the roller.
 
-Skill-based RPG / MOBA tower defense. Cabinets are **slot machines**. Minions walk the **tracks between windows**. One hundred towers, each with its own **talent tree** and **in-match upgrades**. Painterly, late-90s-to-mid-2000s cartoon look — Breath of the Wild lighting, original characters.
+Hi Roller is a portrait-first, skill-based reel strategy game: build a nine-tower strip, rotate slot-machine cabinets, defend the tracks between their windows, and specialize a 100-tower collection through talent trees.
 
-Playable client lives in `game/`. Native Android, Colyseus, and Supabase ship beside it.
+[Play the web preview](https://artistso.github.io/Hi-roller/) · [Release guide](docs/RELEASE.md) · [Roadmap](docs/ROADMAP.md) · [Privacy](docs/PRIVACY.md)
 
-**GitHub:** [artistso/Hi-roller](https://github.com/artistso/Hi-roller)
+## Current preview
 
----
+Playable now:
 
-## Play
+- three-minute Practice and five-minute Solo League matches against local CPU opponents;
+- 100 tower definitions across 10 families, a nine-tower reel strip, and generated 10-node talent trees;
+- local progression, cosmetics, achievements, weekly solo bracket preview, synthesized audio, haptics, and offline caching;
+- one shared browser client packaged both as a PWA and an Android WebView app;
+- an authoritative Colyseus room and Supabase schema that compile as integration foundations.
+
+Not live yet: accounts, real matchmaking, live leaderboards, server reconciliation, payments, analytics, and Play Games Services. The in-game roadmap labels these boundaries directly.
+
+## Repository
+
+```text
+app/                  Android shell; packages game/ into the APK at build time
+game/                 playable HTML5/PWA client and GitHub Pages source
+server/               Colyseus authoritative-room server
+supabase/             RLS schema and edge-function scaffold
+prototype/            preserved native Kotlin Canvas prototype
+tests/                deterministic game-math checks
+scripts/              web validation and release helpers
+.github/workflows/    Android, Pages, and quality automation
+```
+
+The original upload contained the intended files in one flat directory, plus an exported `.git` directory. Version 0.2 restores the documented project structure and removes those accidental repository-internal files.
+
+## Run the game
 
 ```bash
-cd game
-python3 -m http.server 8080 --bind 0.0.0.0
+python3 -m http.server 8080 --bind 127.0.0.1 --directory game
 ```
 
-Or GitHub Pages (Actions workflow deploys `game/` on every push to `main`):
+Open `http://127.0.0.1:8080/`.
 
-`https://artistso.github.io/Hi-roller/`
-
-Enable **Settings → Pages → GitHub Actions** once on the repo.
-
-### How it plays (skill, not pay)
-
-| | |
-|---|---|
-| **Loadout** | Nine towers on your reel strip. Order is the strip the cabinet pulls from. |
-| **Spin** | Swipe a cabinet or hit SPIN (50 chips). Windows reel like a slot machine and land a fresh tower from the strip. Auto-spins under 20% HP. HP 0 before the spin **crumbles** the window. |
-| **Tracks** | Dirt paths run *between* the windows, not around the edge. Minions pick a gutter and march. Towers shoot adjacent tracks. |
-| **Talents** | Every tower has a 10-node tree (two branches + capstone). Talent points from leveling. Specialize — you cannot max all 100. |
-| **In-match** | Spend match chips to raise a type to 4. Separate from the tree. Trees are the long game; chips are the hand. |
-| **100 towers** | Ten families of ten: Reelworks, Wheelhouse, Cardcourt, Diceden, Chipforge, Greenfelt, Emberpit, Mistveil, Ironwager, Starante. Signature tower: **Hi**. |
-
-Practice 3:00 · Ranked 5:00 · Weekly 64-player Friday tournament.
-
----
-
-## Repo
-
-```
-game/          playable HTML5 client (this is also GitHub Pages)
-app/           Kotlin + Canvas GameView, API 33, arm64-v8a, applicationId com.hiroller
-server/        Colyseus highroller_room + Dockerfile
-supabase/      RLS schema + edge functions
-.github/       release APK + Pages
-scripts/make-keystore.sh
-```
-
----
-
-## Signed release APK (not debug)
-
-1. `STOREPASS=... ./scripts/make-keystore.sh`
-2. GitHub repo secrets:
-   - `KEYSTORE_BASE64` — `base64 -w0 keystore/hiroller.jks`
-   - `KEYSTORE_PASSWORD` · `KEY_ALIAS` (`hiroller`) · `KEY_PASSWORD`
-3. Push to `main`. Actions job **Release APK** runs `assembleRelease` and uploads `hiroller-release`.
-4. Never commit `.jks` or `keystore.properties`.
-
-Locally, with `keystore.properties` present:
+## Validate
 
 ```bash
-./gradlew :app:assembleRelease
-# app/build/outputs/apk/release/app-release.apk
+find game/js -name '*.js' -print0 | xargs -0 -n1 node --check
+node scripts/validate-web.mjs
+node tests/game-math.mjs
+
+cd server
+npm ci
+npm run build
 ```
 
-Epic Games Store (Android) and GitHub Releases take that APK.
+The math suite locks important invariants: exactly 100 towers, monotonic XP thresholds, bounded upgrade multipliers, capped simulation delta, no chip loss on rejected inputs, temporary match upgrades, and trap lifetimes independent of entity count.
 
----
+## Android
 
-## Art & audio
+The Android build targets Android 16 / API 36, uses JDK 17, and bundles the current `game/` directory during `preBuild`.
 
-- Characters restyled from the original portraits into cartoon, cel-shaded select busts (original designs, no licensed IP).
-- Loopable action music is synthesized in-engine (132 BPM battle loop, 92 BPM campfire loop) — 8 bars, seams on the tonic. Settings toggle music / SFX / haptics / graphics.
+With Gradle 8.13 installed:
 
----
+```bash
+gradle :app:assembleDebug
+```
 
-## Android Studio
+Output: `app/build/outputs/apk/debug/app-debug.apk`.
 
-Open this folder, JDK 17, run **app** portrait on an S24 FE / arm64 emulator. `GameView` is the native battlefield. Web client is the content-complete build.
+Every pull request publishes an installable debug APK as a GitHub Actions artifact. When the repository's Play upload-key secrets are present, the same workflow also produces a signed release APK and Android App Bundle. See [docs/RELEASE.md](docs/RELEASE.md).
+
+## Product principles
+
+- Skill and readable decisions over disguised randomness.
+- No gameplay advantage sold for money.
+- Cosmetic monetization only when a payment system is intentionally added.
+- Offline Practice remains available.
+- Preview simulations are labeled as previews; local data is not presented as a live service.
+- The center and lower-middle playfield stay clear during live matches.
+
+## Creator
+
+Created by Steven Owens / [artistso](https://artistso.com). Source and preview assets are project materials in this repository; no third-party game characters or licensed casino brands are used.
