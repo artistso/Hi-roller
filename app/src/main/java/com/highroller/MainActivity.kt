@@ -78,6 +78,7 @@ class MainActivity : Activity() {
     }
 
     @Deprecated("Handled by the local game client")
+    @SuppressLint("GestureBackNavigation")
     override fun onBackPressed() {
         dispatchBackToGame()
     }
